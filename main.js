@@ -6,11 +6,20 @@ const createWindow = () => {
         width: 800,
         height: 600,
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js')
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: false, // Recommended for security
+            contextIsolation: true,
+            enableRemoteModule: false,
         },
     })
 
-    win.loadFile('index.html')
+    if (process.env.NODE_ENV === "development") {
+        win.loadURL("http://localhost:3000"); // Load Nuxt dev server
+    } else {
+        win.loadFile(path.join(__dirname, "dist", "index.html")); // Load built Nuxt app
+    }
+
+    // win.loadFile('index.html')
 }
 
 app.whenReady().then(() => {
