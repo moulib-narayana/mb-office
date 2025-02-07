@@ -1,7 +1,7 @@
 {
-  "name": "my-electron-app",
+  "name": "mb-office-suite",
   "version": "1.0.0",
-  "description": "This is my first electron app.",
+  "description": "This is an windows application that is built using electron and nuxt.",
   "main": "main.js",
   "author": "Mouli Bheemaneti",
   "license": "MIT",
