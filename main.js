@@ -1,25 +1,28 @@
-const { app, BrowserWindow } = require("electron");
-const path = require("path");
+const { app, BrowserWindow, ipcMain } = require('electron/main')
+const path = require('node:path')
 
-let mainWindow;
-
-app.whenReady().then(() => {
-    mainWindow = new BrowserWindow({
+const createWindow = () => {
+    const win = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: false, // Recommended for security
-            contextIsolation: true,
+            preload: path.join(__dirname, 'preload.js')
         },
-    });
+    })
 
-    if (process.env.NODE_ENV === "development") {
-        mainWindow.loadURL("http://localhost:3000"); // Load Vite dev server
-    } else {
-        mainWindow.loadFile(path.join(__dirname, "dist", "index.html")); // Load built React app
-    }
+    win.loadFile('index.html')
+}
 
-    mainWindow.on("closed", () => {
-        mainWindow = null;
-    });
-});
+app.whenReady().then(() => {
+    ipcMain.handle('ping', () => 'pong')
+
+    createWindow();
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    })
+})
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit()
+})
